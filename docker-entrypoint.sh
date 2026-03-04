@@ -3,7 +3,7 @@ set -e
 
 # Bootstrap Laravel (needs APP_KEY from runtime env)
 php artisan package:discover --ansi
-php artisan filament:upgrade
+php artisan filament:assets
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
