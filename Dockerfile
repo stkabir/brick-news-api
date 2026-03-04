@@ -15,7 +15,6 @@ RUN install-php-extensions \
     pcntl \
     bcmath
 
-# SQLite CLI (for tinker in entrypoint)
 RUN apk add --no-cache sqlite
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -26,12 +25,6 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 COPY . .
-
-RUN php artisan package:discover --ansi \
-    && php artisan filament:upgrade \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
