@@ -1,27 +1,22 @@
 FROM php:8.3-cli-alpine
 
-# System deps for PHP extensions
-RUN apk add --no-cache \
-    sqlite \
-    sqlite-dev \
-    oniguruma-dev \
-    libxml2-dev \
-    curl-dev \
-    libzip-dev \
+# Install php-extension-installer (handles all deps automatically)
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions
+
+# Install required PHP extensions
+RUN install-php-extensions \
+    pdo_sqlite \
+    mbstring \
+    xml \
+    dom \
     zip \
-    unzip \
-    icu-dev \
-    && docker-php-ext-install \
-        pdo_sqlite \
-        mbstring \
-        xml \
-        dom \
-        curl \
-        zip \
-        intl \
-        pcntl \
-        bcmath \
-        tokenizer
+    intl \
+    pcntl \
+    bcmath
+
+# SQLite CLI (for tinker in entrypoint)
+RUN apk add --no-cache sqlite
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
