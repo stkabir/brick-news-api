@@ -1,7 +1,27 @@
 FROM php:8.3-cli-alpine
 
-RUN apk add --no-cache sqlite sqlite-dev \
-    && docker-php-ext-install pdo_sqlite
+# System deps for PHP extensions
+RUN apk add --no-cache \
+    sqlite \
+    sqlite-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    curl-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    icu-dev \
+    && docker-php-ext-install \
+        pdo_sqlite \
+        mbstring \
+        xml \
+        dom \
+        curl \
+        zip \
+        intl \
+        pcntl \
+        bcmath \
+        tokenizer
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -12,14 +32,14 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 COPY . .
 
-RUN composer run-script post-autoload-dump || true \
+RUN php artisan package:discover --ansi \
+    && php artisan filament:upgrade \
     && php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
 
-RUN mkdir -p database storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
-    && touch database/database.sqlite \
-    && php artisan migrate --force
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 8000
 
@@ -27,4 +47,4 @@ ENV APP_ENV=production
 ENV APP_DEBUG=false
 ENV LOG_CHANNEL=stderr
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+ENTRYPOINT ["docker-entrypoint.sh"]
