@@ -26,6 +26,9 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 COPY . .
 
+RUN mkdir -p bootstrap/cache storage/framework/sessions storage/framework/views storage/framework/cache storage/logs \
+    && chmod -R 775 bootstrap/cache storage
+
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh && chmod +x /usr/local/bin/docker-entrypoint.sh
 
