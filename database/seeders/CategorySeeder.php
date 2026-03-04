@@ -17,6 +17,7 @@ class CategorySeeder extends Seeder
             ['slug' => 'events',       'title_en' => 'Events',       'title_es' => 'Eventos'],
             ['slug' => 'headline-news','title_en' => 'Headline News','title_es' => 'Titulares'],
             ['slug' => 'lifestyle',    'title_en' => 'Lifestyle',    'title_es' => 'Estilo de Vida'],
+            ['slug' => 'home',         'title_en' => 'Home',         'title_es' => 'Inicio'],
             ['slug' => 'news',         'title_en' => 'News',         'title_es' => 'Noticias'],
             ['slug' => 'real-estate',  'title_en' => 'Real Estate',  'title_es' => 'Bienes Raíces'],
         ];
