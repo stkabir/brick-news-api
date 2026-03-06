@@ -17,6 +17,8 @@ class SectionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-view-columns';
     protected static ?int $navigationSort = 3;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Form $form): Form
     {
         return $form->schema([
