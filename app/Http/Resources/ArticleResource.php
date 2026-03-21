@@ -20,7 +20,7 @@ class ArticleResource extends JsonResource
             'bodyEs'     => $this->body_es,
             'image'      => $this->image,
             'category'   => $this->category?->slug,
-            'section'    => $this->section?->slug ?? $this->category?->section?->slug,
+            'section'    => $this->section ?? $this->category?->section,
             'author'     => $this->author,
             'date'       => $this->date?->toDateString(),
             'featured'   => $this->featured,

@@ -11,7 +11,7 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Article::with(['category.section', 'section'])
+        $query = Article::with(['category'])
             ->orderByDesc('priority')
             ->orderByDesc('date');
 
@@ -20,7 +20,7 @@ class ArticleController extends Controller
         }
 
         if ($request->has('section')) {
-            $query->whereHas('section', fn ($q) => $q->where('slug', $request->section));
+            $query->where('section', $request->section);
         }
 
         return ArticleResource::collection($query->get());
@@ -28,7 +28,7 @@ class ArticleController extends Controller
 
     public function show(string $slug)
     {
-        $article = Article::with(['category.section', 'section'])->where('slug', $slug)->firstOrFail();
+        $article = Article::with(['category'])->where('slug', $slug)->firstOrFail();
         return new ArticleResource($article);
     }
 }

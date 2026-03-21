@@ -58,9 +58,13 @@ class ArticleResource extends Resource
                     ->label('Category')
                     ->relationship('category', 'title_en')
                     ->required(),
-                Forms\Components\Select::make('section_id')
+                Forms\Components\Select::make('section')
                     ->label('Section')
-                    ->relationship('section', 'title_en')
+                    ->options([
+                        'trending'    => 'Trending',
+                        'top-stories' => 'Top Stories',
+                        'featured'    => 'Featured',
+                    ])
                     ->placeholder('Use category default')
                     ->nullable(),
                 Forms\Components\TextInput::make('author')

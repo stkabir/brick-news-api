@@ -32,9 +32,13 @@ class CategoryResource extends Resource
             Forms\Components\TextInput::make('slug')
                 ->required()
                 ->unique(ignoreRecord: true),
-            Forms\Components\Select::make('section_id')
+            Forms\Components\Select::make('section')
                 ->label('Default Section')
-                ->relationship('section', 'title_en')
+                ->options([
+                    'trending'    => 'Trending',
+                    'top-stories' => 'Top Stories',
+                    'featured'    => 'Featured',
+                ])
                 ->placeholder('None')
                 ->nullable(),
         ]);
@@ -47,7 +51,7 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('slug')->searchable(),
                 Tables\Columns\TextColumn::make('title_en')->searchable(),
                 Tables\Columns\TextColumn::make('title_es')->searchable(),
-                Tables\Columns\TextColumn::make('section.title_en')->label('Default Section')->placeholder('—'),
+                Tables\Columns\TextColumn::make('section')->label('Default Section')->placeholder('—'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
