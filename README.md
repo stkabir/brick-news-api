@@ -1,59 +1,134 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Brick News API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+REST API backend para el portal de noticias Brickell News. Construida con Laravel + Filament.
 
-## About Laravel
+## Requisitos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.2+
+- Composer
+- MySQL / MariaDB
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instalación
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+```
 
-## Learning Laravel
+## Desarrollo
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+composer run dev   # Inicia servidor en http://localhost:8000 + Vite
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Panel de administración
 
-## Laravel Sponsors
+Disponible en `/admin`. Requiere usuario Filament. Ver `docs/manual-usuario.md` para guía completa.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Variables de entorno clave
 
-### Premium Partners
+| Variable | Descripción | Default |
+|---|---|---|
+| `DB_DATABASE` | Nombre de la base de datos | `laravel` |
+| `DB_USERNAME` | Usuario de la base de datos | `root` |
+| `DB_PASSWORD` | Contraseña de la base de datos | — |
+| `APP_URL` | URL base de la aplicación | `http://localhost` |
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Endpoints
 
-## Contributing
+| Método | Ruta | Descripción |
+|---|---|---|
+| `GET` | `/api/articles` | Listar artículos |
+| `GET` | `/api/articles/{slug}` | Obtener artículo por slug |
+| `GET` | `/api/categories` | Listar categorías |
+| `GET` | `/api/sections` | Listar secciones |
+| `GET` | `/api/search?q=` | Buscar artículos |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Filtros disponibles en `/api/articles`
 
-## Code of Conduct
+| Parámetro | Ejemplo | Descripción |
+|---|---|---|
+| `category` | `?category=business` | Filtrar por slug de categoría |
+| `section` | `?section=trending` | Filtrar por slug de sección |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Los artículos se ordenan por `priority` (desc) y luego por `date` (desc).
 
-## Security Vulnerabilities
+## Modelos
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Article
 
-## License
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `slug` | string | Identificador único (URL-friendly) |
+| `title_en` / `title_es` | string | Título en inglés / español |
+| `summary_en` / `summary_es` | text | Resumen en inglés / español |
+| `body_en` / `body_es` | longtext | Cuerpo completo en inglés / español |
+| `image` | string | URL de la imagen destacada |
+| `category_id` | FK | Categoría del artículo |
+| `section_id` | FK nullable | Sección explícita del artículo (anula la sección por defecto de la categoría) |
+| `author` | string | Nombre del autor |
+| `date` | date | Fecha de publicación |
+| `featured` | boolean | Artículo destacado |
+| `priority` | integer | Prioridad de visualización (mayor = primero) |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Category
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `slug` | string | Identificador único |
+| `title_en` / `title_es` | string | Nombre en inglés / español |
+| `section_id` | FK nullable | Sección por defecto para todos los artículos de esta categoría |
+
+### Section
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `slug` | string | Identificador único |
+| `title_en` / `title_es` | string | Nombre en inglés / español |
+| `description_en` / `description_es` | text | Descripción opcional |
+| `section_layout` | enum | Layout: `grid`, `list`, `sidebar` |
+| `order` | integer | Orden de aparición en el frontend |
+
+### Secciones activas
+
+| Slug | Layout | Zona en el frontend |
+|---|---|---|
+| `trending` | `grid` | Carrusel Trending Developments |
+| `top-stories` | `list` | More News — columna izquierda (lista) |
+| `featured` | `sidebar` | More News — columna central/derecha (tarjetas) |
+
+## Lógica de distribución por secciones
+
+La sección donde aparece un artículo se determina con la siguiente cadena de prioridad:
+
+1. **Sección directa del artículo** (`articles.section_id`) — tiene precedencia.
+2. **Sección por defecto de la categoría** (`categories.section_id`) — se aplica cuando el artículo no tiene sección asignada.
+3. **Sin sección** — el artículo solo aparece en el grid principal de la portada.
+
+El `ArticleResource` aplica esto con:
+
+```php
+'section' => $this->section?->slug ?? $this->category?->section?->slug,
+```
+
+### Configuración actual de categorías
+
+| Categoría | Sección por defecto |
+|---|---|
+| Business | featured |
+| Events | trending |
+| Headline News | top-stories |
+| Lifestyle | featured |
+| News | top-stories |
+| Real Estate | trending |
+| Home | *(ninguna)* |
+
+## Migraciones relevantes
+
+| Migración | Descripción |
+|---|---|
+| `2026_03_20_000000` | Agrega `section_id` (FK nullable) a `articles` |
+| `2026_03_20_000001` | Agrega `section_id` (FK nullable) a `categories` |

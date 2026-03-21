@@ -11,7 +11,7 @@ class Article extends Model
         'slug', 'title_en', 'title_es',
         'summary_en', 'summary_es',
         'body_en', 'body_es',
-        'image', 'category_id', 'author',
+        'image', 'category_id', 'section_id', 'author',
         'date', 'featured', 'priority',
     ];
 
@@ -24,5 +24,10 @@ class Article extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(Section::class);
     }
 }
