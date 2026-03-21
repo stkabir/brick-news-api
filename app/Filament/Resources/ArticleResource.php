@@ -58,6 +58,11 @@ class ArticleResource extends Resource
                     ->label('Category')
                     ->relationship('category', 'title_en')
                     ->required(),
+                Forms\Components\Select::make('section_id')
+                    ->label('Section')
+                    ->relationship('section', 'title_en')
+                    ->placeholder('Use category default')
+                    ->nullable(),
                 Forms\Components\TextInput::make('author')
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('date'),
